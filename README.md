@@ -1,5 +1,34 @@
 # AHR v2 research checkpoints
 
+## Spatial world repair: no baseline win (19 October 2026)
+
+The separate repair keeps the entire **329,334,183-parameter core**, adds a learned **16,400-parameter spatial readout**, and retains the Queen, both EBMs, literal Lorentz event geometry, observed memory and bounded two-step planning: **329,350,583 parameters total**. It corrects the previous input/target coordinate mismatch using grounded neural spatial states, identity-initialized simplex residual forecasts, an existing-head spatial click pointer and train-only calibrated outcome/availability/error heads. The observed semantic context remains fixed during imagination.
+
+All three actual stage-boundary exact-recovery gates passed, including full policy-only component gradients, inference effects and teacher-target isolation. The run completed **4,385 updates / 70,160 examples in 46 minutes 30 seconds**, including **3,617 full joint updates / 57,872 examples**, within the original one-hour allowance. No historical weights were deleted. GPU0 was shared; the other experiments were untouched.
+
+The fixed cohort is the **same 512 observations, 44 eligible recordings and four reused development families** as the full pilot below. Both old and repaired point errors now use floating conditional means, registered before this repair's outcomes. Exact joint NLL remains the proper two-dimensional branch-mixture likelihood.
+
+| Fixed development measurement | Old full model | Repair initial | Repair final | Baseline |
+|---|---:|---:|---:|---:|
+| Human action agreement | 41.60% | 43.75% | **35.16%** | 43.75% |
+| Agreement, 384 multi-legal observations | 22.14% | 25.00% | **13.54%** | 25.00% |
+| Exact joint NLL, lower is better | 5.2245 | 4.4616 | **4.9727** | 4.4300 |
+| Mean click distance, 196 clicks | 24.37 px | 24.24 px | **23.67 px** | 23.19 px |
+| Common fixed-descriptor world MSE | 0.46159 | 0.75462 | **0.08911** | 0.02211 |
+
+**The final model does not beat the combined baseline criterion.** Joint NLL improves over the old model by **0.2517 nats** (paired recording 95% interval **0.1959–0.3074**), but deteriorates against the repaired initialization by **0.5111 nats** (**0.3879–0.6185**). Action agreement is **8.59 percentage points below** the mask baseline (**5.66–11.70 pp below**). The comparison algorithms are a training-fitted mask action prior, its product with uniform coordinates, a training-fitted constant median click, and exact current-descriptor persistence. Exact clicks remain **0/196**. The historical 31.15-pixel result below used marginal modes; it is not the matched old mean-decoder result in this table.
+
+Grounding improves substantially (old encoder alignment MSE **0.43259 → 0.07334**), but world prediction still loses to copying its own neural state (**0.08911 versus 0.08810**) and to raw-descriptor persistence (**0.02211**). In learned successor coordinates, forecast MSE is **0.016300**, versus persistence **0.016046**. Wrong-action alignment and state-shuffle intervals do not establish useful state-specific generalization. Planning now helps same-weight joint NLL by only **0.00382** (**0.00225–0.00548**), without changing action agreement. Removing EBM refinement improves NLL by **0.01545**; the Lorentz-versus-Euclidean interval crosses zero. These are inference interventions, not separately trained causal architecture comparisons.
+
+The most concrete remaining shortcut is click-action suppression: on **68 target-click observations with other legal actions**, agreement falls from **68/68 initially to 0/68 finally**. The final policy selects action 2 on 28 and action 4 on 40 of these rows; the 128 forced-click rows remain correct. This is an exploratory post-run slice of the fixed cohort, not a new independent test.
+
+The new repair excludes 21 complete TRAIN recordings (**7,289 rows**) from all new gradient phases, leaving **66,833 optimizer rows**. The inherited parent used the earlier full pool, so this is a current-run holdout rather than globally unseen data. Calibration and checkpoint selection use only these reserved TRAIN recordings; the unchanged benchmark priors retain all **74,122** original training rows. Fixed TRAIN-selection NLL improves **4.4533 → 3.9472**, while development NLL worsens **4.4616 → 4.9727**, indicating poor transfer/overfitting. The final checkpoint is also best by the registered TRAIN-selection metric; this does not turn the development failure into a win.
+
+Three successor heads are retained, but equal initialization and their shared objective preserve symmetry. Independent ensemble diversity is unestablished; uncertainty is a learned conditional error scale with TRAIN-only calibration, not demonstrated epistemic or out-of-distribution uncertainty. One seed, correlated recordings, reused development families and uncorrected multiple comparisons limit inference. **No ARC gameplay, game completion, competition score, or new-game generalization is measured.**
+
+**Public final/best storage verified:** the [world-repair release](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/tag/world-repair-20261019) contains one deduplicated final/best step-4,385 payload (**1,326,910,741 bytes**), 14 metadata files and a [public restore receipt](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/download/world-repair-20261019/archive_receipts__PUBLISHED_TO_GITHUB.json). Every complete anonymous payload/metadata download and the restore receipt passed byte-count/SHA256 checks at **2026-10-19T20:34:38.438244+00:00**. The checkpoint remains on the training server; the temporary upload credential was removed.
+
+
 ## Full AHR pilot: no baseline win (19 October 2026)
 
 The new full-path run retained **329,334,183 parameters** and activated differentiable Worker/Scout EBM refinement, literal 1+3 Minkowski/Lorentz event calculations, observed two-frame memory and eight-root/two-step learned-world planning. All **17 exact-recovery and activation checks passed** before training. This is a new initialization: the world and geometry modules were freshly initialized, all LayerNorm affine parameters reset, and the verified parent encoder/Queen/Worker/Scout tensors outside LayerNorm preserved. Exact continuation applies within this new run.
