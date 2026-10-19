@@ -1,5 +1,36 @@
 # AHR v2 research checkpoints
 
+<!-- AHR_ACTION_DELTA_RESULTS_BEGIN -->
+## Action balancing and corrected world gradients: no baseline win (19 October 2026)
+
+The complete **329,350,583-parameter AHR v2** remains intact: Queen transformer, Worker and Scout EBMs, literal Lorentz geometry, observed memory, learned spatial world model and bounded two-step planning. Informative actions are sampled uniformly, with one forced action per eight examples. Conditional coordinate supervision is separated from branch action weights; world heads use different successor bootstraps and changed-cell supervision.
+
+A first action-balanced trial completed **3,446 updates / 55,136 sampled examples**. Its calibrated policy recovered **34/68** optional clicks, but its raw policy recovered **0/68**. It also exposed a concrete implementation error: subtracting a detached current state from a forecast containing that same identity base created an unwanted encoder gradient. The corrected loss differentiates both terms. Identity-limit and nonzero-residual finite-difference tests verify the correction; initial forward predictions remain bitwise identical.
+
+The corrected trial completed **2,516 updates / 40,256 sampled examples in 26.64 minutes**, including **1,812** joint updates. All three actual stage recovery gates passed. It used the same parent, seed, data, sampler and learning rates, with a separately registered shorter allowance. This makes terminal cross-trial comparisons descriptive; matched TRAIN updates are an additional mechanism diagnostic.
+
+| Same 512 development observations | Action agreement | Joint NLL, lower is better | Mean click distance |
+|---|---:|---:|---:|
+| TRAIN-fitted baseline | 43.75% | 4.4300 |23.19px|
+| Parent 4,385 |35.16%|4.9727|23.67px|
+| First action-balanced 3,446 |40.43%|4.9127|22.93px|
+| Corrected terminal 2,516 |35.74%|4.9493|23.26px|
+| Preregistered TRAIN-selected 704 |36.52%|4.9797|23.61px|
+
+Baseline cells use metric-specific references: mask-table action probabilities with uniform legal coordinate density for joint NLL, and the TRAIN-fitted coordinate median for click distance. They are not one predictor yielding every cell.
+
+**Neither corrected endpoint beats the unchanged baseline criterion.** Optional clicks remain **0/68**, raw and calibrated. The terminal raw joint NLL worsens from 5.0000 to 5.1244; TRAIN-fitted calibration lowers it to 4.9493. Loss reduction after calibration does not demonstrate that the raw policy learned useful click decisions.
+
+Grounding is more stable: corrected world forecast MSE is **0.08603**, versus 0.21326 in the first action-balanced trial and 0.08911 at initialization. Encoder alignment is 0.06875, versus 0.19342 and 0.07334 respectively. At matched TRAIN update 2,204, world MSE is 0.08472 versus 0.12296. However, the corrected terminal forecast still loses to neural-current persistence **0.08382** and fixed-descriptor persistence **0.02211**. Useful action-dependent dynamics beyond persistence are not established. Distinct world heads alone do not prove calibrated epistemic uncertainty.
+
+[Corrected final/best weights and benchmark/restore metadata](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/tag/delta-gradient-20261019) · [First diagnostic trial](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/tag/action-balanced-20261019).
+
+**Checkpoint preservation verified:** both corrected final/best payloads total **2,653,937,277 bytes**. All 22 payload/metadata assets and the separate [restore receipt](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/download/delta-gradient-20261019/archive_receipts__PUBLISHED_TO_GITHUB.json) passed complete anonymous byte-count/SHA256 verification at **2026-10-19T22:33:44.406082+00:00**. Latest two resumable checkpoints plus best remain on the training server. The temporary upload credential has been removed. GitHub releases remain mutable; verify full hashes on restore.
+
+These are **offline human-playthrough imitation and one-step descriptor diagnostics**, using the same 512 observations from 44 recordings in four reused development families. This is not an ARC-AGI-3 gameplay score, game-completion result or new-game generalization test. The TRAIN-family selector has only four optional-click labels; ancestors were exposed to its families. One seed, reused development data and recording-bootstrap intervals conditional on these families limit conclusions. Inference controls establish component activity, not a causal architecture advantage.
+
+<!-- AHR_ACTION_DELTA_RESULTS_END -->
+
 ## Spatial world repair: no baseline win (19 October 2026)
 
 The separate repair keeps the entire **329,334,183-parameter core**, adds a learned **16,400-parameter spatial readout**, and retains the Queen, both EBMs, literal Lorentz event geometry, observed memory and bounded two-step planning: **329,350,583 parameters total**. It corrects the previous input/target coordinate mismatch using grounded neural spatial states, identity-initialized simplex residual forecasts, an existing-head spatial click pointer and train-only calibrated outcome/availability/error heads. The observed semantic context remains fixed during imagination.
