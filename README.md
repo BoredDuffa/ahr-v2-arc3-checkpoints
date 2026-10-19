@@ -1,5 +1,27 @@
 # AHR v2 research checkpoints
 
+## Full AHR pilot: no baseline win (19 October 2026)
+
+The new full-path run retained **329,334,183 parameters** and activated differentiable Worker/Scout EBM refinement, literal 1+3 Minkowski/Lorentz event calculations, observed two-frame memory and eight-root/two-step learned-world planning. All **17 exact-recovery and activation checks passed** before training. This is a new initialization: the world and geometry modules were freshly initialized, all LayerNorm affine parameters reset, and the verified parent encoder/Queen/Worker/Scout tensors outside LayerNorm preserved. Exact continuation applies within this new run.
+
+It completed **5,500 updates / 22,000 examples in 47 minutes 1 second**, including smoke checks and evaluation, within the original one-hour allowance on shared GPU0. This is less than one pass through the 74,122-example pool. The frozen development cohort has **512 observations, 384 multi-legal rows and 196 click rows**, balanced across four reused families and covering all 44 eligible recordings. It differs from the historical 4,096-row cohort below.
+
+| Fixed development metric | New-run initial | Final step 5,500 | Baseline |
+|---|---:|---:|---:|
+| Human action agreement | 38.67% | 41.60% | 43.75% |
+| Agreement with multiple legal actions | 18.23% | 22.14% | 25.00% |
+| Proper joint action/click NLL, lower is better | 12.9404 | 5.2245 | 4.4300 |
+| Mean click distance, lower is better | 28.42 px | 31.15 px | 23.19 px |
+| Fixed-descriptor world MSE, lower is better | 1.8328 | 0.4616 | 0.0221 |
+
+The action baseline is a training-fitted legal-mask prior; joint NLL uses that prior with uniform coordinates; click distance uses a training-fitted constant median; world MSE uses the fixed current-frame descriptor as its successor prediction. Final exact clicks were **0/196**. The final action difference from the mask baseline is **-2.15 percentage points** (exploratory 95% interval **-5.46 to +0.98 pp**), so superiority is not established. The best checkpoint by development joint NLL is step **2,500**, also below the baseline criterion.
+
+Real observations outperform shuffled observation bundles on multi-legal action agreement by **3.13 pp** (95% interval **+0.52 to +5.80 pp**), but not on joint NLL. This is limited evidence of useful observation dependence. Disabling planning slightly improves joint NLL by **0.0069 nats** (paired interval **0.0044 to 0.0093**); the Lorentz-versus-Euclidean difference includes zero. These are same-checkpoint inference controls, not separately trained architecture ablations. Intervals resample recordings within fixed reused families, with one training seed and no multiple-comparison correction.
+
+World prediction and encoder anchoring improve from their new-run initial states, but final world MSE remains **20.9 times** the copy-current error (19.7 times on descriptor-changed rows). The coarse fixed auxiliary target is 16-colour occupancy in 8x8 spatial cells; it is not a direct policy input or full visual reconstruction. The planner uses approximate future transitions and unverified future masks. Computation stays at fixed depth two; persistent event DAG/pheromone memory and useful adaptive halting are not demonstrated. **No ARC gameplay, completion rate or competition score was measured.**
+
+**Public final/best storage verified:** the [full-path release](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/tag/full-path-20261019) contains final step 5,500, best step 2,500, 11 selected metadata files and a [public restore receipt](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/download/full-path-20261019/archive_receipts__PUBLISHED_TO_GITHUB.json). Both payloads total **2,652,910,016 bytes**. Every complete anonymous payload download and the restore receipt passed byte-count/SHA256 checks. The weights also remain on the training server; the temporary upload credential was removed.
+
 Public recovery checkpoints for the AHR v2 research project. These artifacts preserve experiments and their failure cases; they are not a validated ARC-AGI model or a standalone inference package.
 
 **Diagnostic archive verified on 19 October 2026.** All four payloads (5,302,800,472 bytes in total), their metadata and the public restore receipt passed full anonymous download/SHA-256 verification. See the [diagnostic release](https://github.com/BoredDuffa/ahr-v2-arc3-checkpoints/releases/tag/diagnostic-archive-20261019).
